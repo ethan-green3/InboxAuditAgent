@@ -79,8 +79,8 @@ func main() {
 
 	err = sendEmail(
 		token,
-		mailboxUser, // sending from this mailbox
-		mailboxUser, // sending TO same user (or COO email)
+		"egreen@clgtrial.com", // sending from this mailbox
+		mailboxUser,           // sending TO same user (or COO email)
 		"Friday Inbox Review - Loose Ends",
 		emailBody,
 	)
