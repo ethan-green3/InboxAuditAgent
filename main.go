@@ -77,4 +77,20 @@ func main() {
 	printPrioritySection("Medium Priority", priorityBuckets[PriorityMedium])
 	printPrioritySection("Low Priority", priorityBuckets[PriorityLow])
 
+	emailBody := buildEmailBody(priorityBuckets)
+
+	err = sendEmail(
+		token,
+		mailboxUser, // sending from this mailbox
+		mailboxUser, // sending TO same user (or COO email)
+		"Friday Inbox Review - Loose Ends",
+		emailBody,
+	)
+
+	if err != nil {
+		log.Fatalf("failed to send email: %v", err)
+	}
+
+	fmt.Println("Report email sent successfully")
+
 }

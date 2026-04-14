@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -53,6 +54,51 @@ func graphGET(client *http.Client, token, endpoint string, out any) error {
 
 	if err := json.Unmarshal(body, out); err != nil {
 		return fmt.Errorf("failed to parse Graph response: %w\nbody: %s", err, string(body))
+	}
+
+	return nil
+}
+
+func sendEmail(token, fromUser, toUser, subject, body string) error {
+	url := fmt.Sprintf("https://graph.microsoft.com/v1.0/users/%s/sendMail", fromUser)
+
+	payload := map[string]any{
+		"message": map[string]any{
+			"subject": subject,
+			"body": map[string]string{
+				"contentType": "Text",
+				"content":     body,
+			},
+			"toRecipients": []map[string]any{
+				{
+					"emailAddress": map[string]string{
+						"address": toUser,
+					},
+				},
+			},
+		},
+		"saveToSentItems": true,
+	}
+
+	jsonData, _ := json.Marshal(payload)
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 202 {
+		return fmt.Errorf("failed to send email: status %d", resp.StatusCode)
 	}
 
 	return nil
