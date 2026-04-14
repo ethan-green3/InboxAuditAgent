@@ -10,9 +10,7 @@ import (
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("error loading .env file")
-	}
+	_ = godotenv.Load()
 
 	tenantID := mustEnv("TENANT_ID")
 	clientID := mustEnv("CLIENT_ID")
