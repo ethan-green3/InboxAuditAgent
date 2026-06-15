@@ -1,30 +1,31 @@
 name: Weekly Inbox Audit
 
 on:
-    schedule:
-        - cron: "0 5 * * 5" # Friday 12:00 AM CST (UTC+5 offset)
-    workflow_dispatch: # allows manual run
+  schedule:
+    - cron: "0 5 * * 5" # Friday 12:00 AM CST (UTC+5 offset)
+  workflow_dispatch: # allows manual run
 
 jobs:
-    run-audit:
-        runs-on: ubuntu-latest
+  run-audit:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout repo
-              uses: actions/checkout@v3
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-            - name: Set up Go
-              uses: actions/setup-go@v4
-              with:
-                  go-version: "1.22"
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.22"
 
-            - name: Install dependencies
-              run: go mod tidy
+      - name: Install dependencies
+        run: go mod tidy
 
-            - name: Run script
-              env:
-                  TENANT_ID: ${{ secrets.TENANT_ID }}
-                  CLIENT_ID: ${{ secrets.CLIENT_ID }}
-                  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-                  MAILBOX_USER: ${{ secrets.MAILBOX_USER }}
-              run: go run .
+      - name: Run script
+        env:
+          TENANT_ID: ${{ secrets.TENANT_ID }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          MAILBOX_USER: ${{ secrets.MAILBOX_USER }}
+          MAILBOX_USER2: ${{ secrets.MAILBOX_USER2 }}
+        run: go run .
